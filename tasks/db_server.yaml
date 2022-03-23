@@ -1,0 +1,48 @@
+- name: Download MySQL community Repo
+  get_url:
+    url: http://repo.mysql.com/mysql-community-release-el7-7.noarch.rpm
+    dest: /tmp
+
+#- name: Install MySQL Community Repo
+#  command: /usr/bin/rpm -ivh /tmp/mysql-community-release-el7-7.noarch.rpm
+
+- name: Install MySQL Server
+  yum: 
+    name: 
+    - mysql-server 
+    - python-setuptools
+    state: present
+
+- name: Start MySQL Server and enable it
+  service: 
+    name: mysqld 
+    state: started 
+    enabled: yes
+  when: ansible_os_family == 'CentOS' or ansible_os_family == 'RedHat'
+
+- name: Install Required pip modules
+  pip:
+    name:
+    - PyMySQL
+    - MySQL-python
+    state: present
+    executable: pip3
+    ignore_errors: yes
+
+- name: Remove Test database if it exist.
+  mysql_db: 
+    name: test 
+    state: absent
+
+- name: Change root password
+  mysql_user:
+    name: root 
+    host: "{{ item }}"
+    password: "{{ root_db_password }}"
+  with_items:
+  - "{{ ansible_hostname }}"
+  - 127.0.0.1
+  - ::1
+  - localhost
+
+

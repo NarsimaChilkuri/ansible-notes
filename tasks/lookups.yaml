@@ -1,0 +1,3 @@
+- name: Lookup Plugin test
+  debug:
+    msg: "motd value is {{ lookup('csvfile', 'Li file=/home/vagrant/ansible/csv_files/ansible.csv delimiter=,') }}"

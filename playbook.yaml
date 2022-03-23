@@ -1,0 +1,12 @@
+- name: Install Playbook
+  hosts: all
+  become: true
+  user: vagrant
+  
+  tasks: 
+  #- include: tasks/lookups.yaml
+  #- include: tasks/db_server.yaml
+  #  vars: 
+  #    root_db_password: 12345678
+  - include: tasks/blocks_always.yaml
+      

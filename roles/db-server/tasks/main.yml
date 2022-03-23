@@ -1,0 +1,11 @@
+---
+- name: Run a command
+  command: hostname -I
+  register: hostname
+
+- debug:
+    var: hostname.stdout
+    
+- debug:
+    msg: "this is that variable from role {{ demo_var }}"
+    
