@@ -3,15 +3,18 @@
     url: http://repo.mysql.com/mysql-community-release-el7-7.noarch.rpm
     dest: /tmp
 
-#- name: Install MySQL Community Repo
-#  command: /usr/bin/rpm -ivh /tmp/mysql-community-release-el7-7.noarch.rpm
+- name: Install MySQL Community Repo
+  command: /usr/bin/rpm -ivh /tmp/mysql-community-release-el7-7.noarch.rpm
+  ignore_errors: yes
 
 - name: Install MySQL Server
   yum: 
     name: 
     - mysql-server 
     - python-setuptools
-    state: present
+    - python-pip
+    - MySQL-python
+    state: latest
 
 - name: Start MySQL Server and enable it
   service: 
@@ -20,19 +23,13 @@
     enabled: yes
   when: ansible_os_family == 'CentOS' or ansible_os_family == 'RedHat'
 
-- name: Install Required pip modules
-  pip:
-    name:
-    - PyMySQL
-    - MySQL-python
+- name: Create a new database with name 'bobdata'
+  mysql_db:
+    name: bobdata
     state: present
-    executable: pip3
-    ignore_errors: yes
-
-- name: Remove Test database if it exist.
-  mysql_db: 
-    name: test 
-    state: absent
+    login_host: "{{ ansible_hostname }}"
+    login_user: root
+    login_password: "{{ root_db_password }}"
 
 - name: Change root password
   mysql_user:

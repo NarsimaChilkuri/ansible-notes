@@ -12,8 +12,11 @@
   template:
     src: html_files/index.html.j2
     dest: /usr/share/nginx/html/index.html
+    notify: Start Nginx
 
-- name: Start NGiNX
+handlers:
+- name: Start Nginx
   service:
     name: nginx
     state: started
+
